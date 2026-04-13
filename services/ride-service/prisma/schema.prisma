@@ -1,0 +1,57 @@
+// services/ride-service/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Ride {
+  id            String     @id @default(uuid()) @db.Uuid
+  riderId       String     @map("rider_id") @db.Uuid
+  driverId      String?    @map("driver_id") @db.Uuid
+  status        RideStatus @default(REQUESTED)
+  fare          Decimal?   @db.Decimal(10, 2)
+  pickupLat     Decimal    @map("pickup_lat") @db.Decimal(10, 7)
+  pickupLng     Decimal    @map("pickup_lng") @db.Decimal(10, 7)
+  dropoffLat    Decimal    @map("dropoff_lat") @db.Decimal(10, 7)
+  dropoffLng    Decimal    @map("dropoff_lng") @db.Decimal(10, 7)
+  failureReason String?    @map("failure_reason")
+  acceptedAt    DateTime?  @map("accepted_at")
+  startedAt     DateTime?  @map("started_at")
+  completedAt   DateTime?  @map("completed_at")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  events        RideEvent[]
+
+  @@index([riderId])
+  @@index([driverId])
+  @@index([status])
+  @@map("rides")
+}
+
+model RideEvent {
+  id         String   @id @default(uuid()) @db.Uuid
+  rideId     String   @map("ride_id") @db.Uuid
+  eventType  String   @map("event_type") @db.VarChar(50)
+  oldStatus  String?  @map("old_status") @db.VarChar(20)
+  newStatus  String?  @map("new_status") @db.VarChar(20)
+  actorId    String?  @map("actor_id") @db.Uuid
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+  ride       Ride     @relation(fields: [rideId], references: [id])
+
+  @@index([rideId])
+  @@map("ride_events")
+}
+
+enum RideStatus {
+  REQUESTED
+  MATCHED
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  FAILED
+}

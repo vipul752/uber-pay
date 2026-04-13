@@ -1,0 +1,45 @@
+// services/user-service/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String        @db.VarChar(100)
+  email        String        @unique @db.VarChar(255)
+  passwordHash String        @map("password_hash") @db.VarChar(255)
+  role         Role
+  isActive     Boolean       @default(true) @map("is_active")
+  lastLogin    DateTime?     @map("last_login")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  driverProfile DriverProfile?
+
+  @@map("users")
+}
+
+model DriverProfile {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @unique @map("user_id") @db.Uuid
+  isOnline      Boolean  @default(false) @map("is_online")
+  vehicleNumber String?  @map("vehicle_number") @db.VarChar(20)
+  vehicleModel  String?  @map("vehicle_model") @db.VarChar(100)
+  licenseNumber String?  @map("license_number") @db.VarChar(50)
+  rating        Decimal  @default(5.0) @db.Decimal(3, 2)
+  totalRides    Int      @default(0) @map("total_rides")
+  isVerified    Boolean  @default(false) @map("is_verified")
+  createdAt     DateTime @default(now()) @map("created_at")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("driver_profiles")
+}
+
+enum Role {
+  rider
+  driver
+}

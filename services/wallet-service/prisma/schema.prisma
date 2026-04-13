@@ -1,0 +1,61 @@
+// services/wallet-service/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Wallet {
+  id           String        @id @default(uuid()) @db.Uuid
+  userId       String        @unique @map("user_id") @db.Uuid
+  balance      Decimal       @default(0) @db.Decimal(14, 2)
+  currency     String        @default("INR") @db.Char(3)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  transactions Transaction[]
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id           String          @id @default(uuid()) @db.Uuid
+  walletId     String          @map("wallet_id") @db.Uuid
+  type         TransactionType
+  amount       Decimal         @db.Decimal(14, 2)
+  balanceAfter Decimal         @map("balance_after") @db.Decimal(14, 2)
+  reference    String          @unique @db.VarChar(255)
+  description  String?
+  createdAt    DateTime        @default(now()) @map("created_at")
+  wallet       Wallet          @relation(fields: [walletId], references: [id])
+
+  @@index([walletId])
+  @@index([reference])
+  @@map("transactions")
+}
+
+model Outbox {
+  id        String       @id @default(uuid()) @db.Uuid
+  eventType String       @map("event_type") @db.VarChar(100)
+  payload   Json
+  status    OutboxStatus @default(PENDING)
+  attempts  Int          @default(0)
+  sentAt    DateTime?    @map("sent_at")
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  @@index([status, createdAt])
+  @@map("outbox")
+}
+
+enum TransactionType {
+  DEBIT
+  CREDIT
+  REFUND
+}
+
+enum OutboxStatus {
+  PENDING
+  SENT
+  FAILED
+}

@@ -1,0 +1,41 @@
+// services/notification-service/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Notification {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  type      String   @db.VarChar(50)
+  title     String   @db.VarChar(255)
+  message   String
+  isRead    Boolean  @default(false) @map("is_read")
+  rideId    String?  @map("ride_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+  @@map("notifications")
+}
+
+model DeviceToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique
+  platform  Platform
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("device_tokens")
+}
+
+enum Platform {
+  ios
+  android
+  web
+}

@@ -1,0 +1,16 @@
+{
+  "name": "uberpay",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "docker compose up --build",
+    "infra": "docker compose up postgres-user postgres-ride postgres-wallet redis kafka zookeeper kafka-ui -d",
+    "stop": "docker compose down",
+    "logs": "docker compose logs -f"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
