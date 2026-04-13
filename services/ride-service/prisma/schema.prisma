@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Ride {
@@ -13,11 +14,15 @@ model Ride {
   driverId      String?    @map("driver_id") @db.Uuid
   status        RideStatus @default(REQUESTED)
   fare          Decimal?   @db.Decimal(10, 2)
+  distanceKm    Decimal?   @map("distance_km") @db.Decimal(10, 2)
   pickupLat     Decimal    @map("pickup_lat") @db.Decimal(10, 7)
   pickupLng     Decimal    @map("pickup_lng") @db.Decimal(10, 7)
   dropoffLat    Decimal    @map("dropoff_lat") @db.Decimal(10, 7)
   dropoffLng    Decimal    @map("dropoff_lng") @db.Decimal(10, 7)
+  pickupAddress String?    @map("pickup_address")
+  dropoffAddress String?   @map("dropoff_address")
   failureReason String?    @map("failure_reason")
+  cancelledBy   String?    @map("cancelled_by") @db.Uuid
   acceptedAt    DateTime?  @map("accepted_at")
   startedAt     DateTime?  @map("started_at")
   completedAt   DateTime?  @map("completed_at")

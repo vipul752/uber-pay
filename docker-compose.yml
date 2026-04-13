@@ -115,6 +115,8 @@ services:
     ports:
       - "3002:3002"
     env_file: ./services/ride-service/.env
+    environment:
+      KAFKA_BROKER: kafka:29092
     depends_on:
       - postgres-ride
       - kafka
