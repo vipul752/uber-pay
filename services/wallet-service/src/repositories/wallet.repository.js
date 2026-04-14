@@ -53,7 +53,6 @@ async function atomicDebit({
   balanceAfter,
   reference,
   description,
-  rideId,
   outboxEvent,
 }) {
   return prisma.$transaction([
@@ -71,7 +70,6 @@ async function atomicDebit({
         balanceAfter,
         reference,
         description,
-        rideId,
       },
     }),
     // 3. Outbox entry — guarantees event reaches Kafka even if app crashes
@@ -91,7 +89,6 @@ async function atomicCredit({
   balanceAfter,
   reference,
   description,
-  rideId,
   outboxEvent,
 }) {
   return prisma.$transaction([
@@ -107,7 +104,6 @@ async function atomicCredit({
         balanceAfter,
         reference,
         description,
-        rideId,
       },
     }),
     prisma.outbox.create({
@@ -125,7 +121,6 @@ async function atomicRefund({
   balanceAfter,
   reference,
   description,
-  rideId,
   outboxEvent,
 }) {
   return prisma.$transaction([
@@ -141,7 +136,6 @@ async function atomicRefund({
         balanceAfter,
         reference,
         description,
-        rideId,
       },
     }),
     prisma.outbox.create({
