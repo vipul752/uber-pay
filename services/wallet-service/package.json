@@ -1,35 +1,31 @@
 {
   "name": "wallet-service",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "UberPay Wallet Service — CQRS, Distributed Locks, Outbox Pattern",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec ts-node src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "db:seed": "node prisma/seed.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "@prisma/client": "^7.7.0",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.1",
-    "express": "^5.2.1",
-    "helmet": "^8.1.0",
-    "ioredis": "^5.10.1",
+    "@prisma/client": "^5.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "ioredis": "^5.3.2",
+    "jsonwebtoken": "^9.0.2",
     "kafkajs": "^2.2.4",
-    "pg": "^8.20.0",
-    "uuid": "^13.0.0"
+    "morgan": "^1.10.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/node": "^25.6.0",
-    "@types/uuid": "^10.0.0",
-    "nodemon": "^3.1.14",
-    "prisma": "^7.7.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^6.0.2"
+    "nodemon": "^3.1.0",
+    "prisma": "^5.10.0"
   }
 }
